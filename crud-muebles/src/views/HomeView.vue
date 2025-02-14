@@ -1,20 +1,25 @@
-<!-- Página principal con lista de muebles -->
 <template>
-    <div>
-        <h1>Muebles Restaurados</h1>
-        <router-link to="/agregar">
-            <button>Agregar Mueble</button>
-        </router-link>
+    <div class="container mt-4">
+        <h1 class="text-center">Muebles Restaurados</h1>
+        <div class="text-center mb-3">
+            <router-link to="/agregar">
+                <button class="btn btn-primary">Agregar Mueble</button>
+            </router-link>
+        </div>
 
-        <div v-if="muebles.length === 0">No hay muebles disponibles.</div>
+        <div v-if="muebles.length === 0" class="alert alert-warning text-center">No hay muebles disponibles.</div>
 
-        <div class="muebles-grid">
-            <div v-for="mueble in muebles" :key="mueble.id" class="mueble-card">
-                <img :src="mueble.imagenUrl" alt="Imagen del mueble">
-                <h3>{{ mueble.nombre }}</h3>
-                <p><strong>Categoría:</strong> {{ mueble.tag }}</p>
-                <p><strong>Descripción:</strong> {{ mueble.descripcion }}</p>
-                <button @click="eliminarMueble(mueble.id)">Eliminar</button>
+        <div class="row">
+            <div v-for="mueble in muebles" :key="mueble.id" class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <img :src="mueble.imagenUrl" class="card-img-top" alt="Imagen del mueble">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ mueble.nombre }}</h5>
+                        <p class="card-text"><strong>Categoría:</strong> {{ mueble.tag }}</p>
+                        <p class="card-text">{{ mueble.descripcion }}</p>
+                        <button @click="eliminarMueble(mueble.id)" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -46,24 +51,8 @@ export default {
 </script>
 
 <style scoped>
-.muebles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-    padding: 20px;
-}
-
-.mueble-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
+.card-img-top {
+    max-height: 200px;
+    object-fit: cover;
 }
 </style>
