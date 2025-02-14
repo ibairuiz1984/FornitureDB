@@ -1,12 +1,6 @@
 <template>
     <div class="container mt-4">
         <h1 class="text-center">Muebles Restaurados</h1>
-        <div class="text-center mb-3">
-            <router-link to="/agregar">
-                <button class="btn btn-primary">Agregar Mueble</button>
-            </router-link>
-        </div>
-
         <div v-if="muebles.length === 0" class="alert alert-warning text-center">No hay muebles disponibles.</div>
 
         <div class="row">

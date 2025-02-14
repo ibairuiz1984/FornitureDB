@@ -1,10 +1,6 @@
 <template>
     <div>
         <h1>Agregar Mueble</h1>
-        <router-link to="/">
-            <button>Volver</button>
-        </router-link>
-
         <form @submit.prevent="agregarMueble">
             <input v-model="nombre" placeholder="Nombre del mueble" required>
             <input v-model="imagenUrl" placeholder="URL de la imagen" required>
