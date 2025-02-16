@@ -1,63 +1,61 @@
 <template>
   <div>
-    <NavBar :muebles="muebles" @buscarPorTag="filtrarPorCategoria" />
-    <router-view />
+    <!-- Pasamos el filtro al NavBar mediante props o usamos el evento para actualizarlo -->
+    <NavBar :muebles="muebles" @buscarPorTag="actualizarFiltro" />
+    <!-- Aquí usamos un componente que mostrará la lista filtrada.
+         Este componente inyectará la variable reactiva 'mueblesFiltrados' -->
+    <HomeView />
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { db } from "@/firebase"; // Asegúrate de importar correctamente Firebase
+import { ref, computed, onMounted, provide } from "vue";
+import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import NavBar from "./components/NavBar.vue";
+import HomeView from "./views/HomeView.vue";
 
 export default {
   name: "App",
-  components: { NavBar },
+  components: { NavBar, HomeView },
   setup() {
-    const muebles = ref([]); // Guarda los muebles desde Firebase
-    const mueblesOriginales = ref([]); // Para restaurar la lista tras filtrar
+    // Lista completa de muebles (reactiva)
+    const muebles = ref([]);
+    // Filtro actual, puede ser una categoría o cadena vacía
+    const filtro = ref("");
 
-    // Función para cargar los datos desde Firebase
+    // Cargar los muebles desde Firebase
     const cargarMuebles = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "muebles"));
-        const datos = querySnapshot.docs.map((doc) => ({
+        muebles.value = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        muebles.value = datos;
-        mueblesOriginales.value = datos; // Guarda la lista completa
       } catch (error) {
         console.error("Error al obtener los muebles:", error);
       }
     };
 
-    // Función para filtrar los muebles por categoría (tag)
-    const filtrarPorCategoria = (tag) => {
-      if (!tag) {
-        muebles.value = mueblesOriginales.value; // Restaura todos los muebles si no hay búsqueda
-        return;
-      }
-      muebles.value = mueblesOriginales.value.filter((mueble) =>
-        mueble.tag.toLowerCase().includes(tag.toLowerCase())
-      );
-    };
-
     onMounted(cargarMuebles);
 
-    return { muebles, filtrarPorCategoria };
+    // Propiedad computada para filtrar los muebles en base al filtro actual
+    const mueblesFiltrados = computed(() => {
+      if (!filtro.value) return muebles.value;
+      return muebles.value.filter((mueble) =>
+        mueble.tag.toLowerCase().includes(filtro.value.toLowerCase())
+      );
+    });
+
+    // Función para actualizar el filtro cuando se emite el evento desde NavBar
+    const actualizarFiltro = (tag) => {
+      filtro.value = tag;
+    };
+
+    // Proveer la lista filtrada para que otros componentes la usen
+    provide("mueblesFiltrados", mueblesFiltrados);
+
+    return { muebles, actualizarFiltro };
   },
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

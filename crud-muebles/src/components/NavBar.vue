@@ -37,14 +37,14 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li v-for="(tag, index) in uniqueTags" :key="index">
-                <a class="dropdown-item" href="#">{{ tag }}</a>
+                <a class="dropdown-item" href="#" @click.prevent="buscar(tag)">{{ tag }}</a>
               </li>
             </ul>
           </li>
         </ul>
 
         <!-- Barra de búsqueda -->
-        <form class="d-flex" @submit.prevent="buscar">
+        <form class="d-flex" @submit.prevent="buscar(busqueda)">
           <input 
             v-model="busqueda" 
             class="form-control me-2" 
@@ -62,29 +62,28 @@
 <script>
 export default {
   props: {
-  muebles: {
-    type: Array,
-    default: () => [], // Evita que sea undefined
+    muebles: {
+      type: Array,
+      default: () => [],
+    },
   },
-},
-computed: {
-  uniqueTags() {
-    if (!Array.isArray(this.muebles)) return []; // Asegura que sea un array
-    const tags = this.muebles.map((mueble) => mueble.tag);
-    return [...new Set(tags)];
+  data() {
+    return {
+      busqueda: "",
+    };
   },
-},
+  computed: {
+    uniqueTags() {
+      if (!Array.isArray(this.muebles)) return [];
+      const tags = this.muebles.map((mueble) => mueble.tag);
+      return [...new Set(tags)];
+    },
+  },
   methods: {
-    buscar() {
-      this.$emit("buscarPorTag", this.busqueda); // Emite evento al padre
+    // Emite el evento al padre con el tag seleccionado o escrito
+    buscar(tag) {
+      this.$emit("buscarPorTag", tag);
     },
   },
 };
 </script>
-
-<style scoped>
-/* Asegura que el contenido no quede oculto detrás de la navbar */
-body {
-  padding-top: 60px;
-}
-</style>
