@@ -1,10 +1,9 @@
 <template>
-  <div>
+  <div class="container mt-5 pt-5">
     <!-- Pasamos el filtro al NavBar mediante props o usamos el evento para actualizarlo -->
     <NavBar :muebles="muebles" @buscarPorTag="actualizarFiltro" />
-    <!-- Aquí usamos un componente que mostrará la lista filtrada.
-         Este componente inyectará la variable reactiva 'mueblesFiltrados' -->
-    <HomeView />
+    <!-- Utilizamos router-view para que Vue Router maneje las vistas -->
+    <router-view />
   </div>
 </template>
 
@@ -13,11 +12,10 @@ import { ref, computed, onMounted, provide } from "vue";
 import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import NavBar from "./components/NavBar.vue";
-import HomeView from "./views/HomeView.vue";
 
 export default {
   name: "App",
-  components: { NavBar, HomeView },
+  components: { NavBar },
   setup() {
     // Lista completa de muebles (reactiva)
     const muebles = ref([]);

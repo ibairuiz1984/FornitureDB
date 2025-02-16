@@ -20,7 +20,9 @@
             <router-link class="nav-link" to="/">Inicio</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/agregar">Agregar Mueble</router-link>
+            <router-link class="nav-link" exact to="/agregar"
+              >Agregar Mueble</router-link
+            >
           </li>
 
           <!-- Dropdown de categorías dinámico -->
@@ -37,7 +39,18 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li v-for="(tag, index) in uniqueTags" :key="index">
-                <a class="dropdown-item" href="#" @click.prevent="buscar(tag)">{{ tag }}</a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  @click.prevent="buscar(tag)"
+                  >{{ tag }}</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="#" @click.prevent="buscar('')"
+                  >Todas</a
+                >
               </li>
             </ul>
           </li>
@@ -45,11 +58,11 @@
 
         <!-- Barra de búsqueda -->
         <form class="d-flex" @submit.prevent="buscar(busqueda)">
-          <input 
-            v-model="busqueda" 
-            class="form-control me-2" 
-            type="search" 
-            placeholder="Buscar por categoría" 
+          <input
+            v-model="busqueda"
+            class="form-control me-2"
+            type="search"
+            placeholder="Buscar por categoría"
             aria-label="Search"
           />
           <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -80,10 +93,17 @@ export default {
     },
   },
   methods: {
-    // Emite el evento al padre con el tag seleccionado o escrito
     buscar(tag) {
+      // Si se recibe una cadena vacía (''), se interpretará como "mostrar todos"
       this.$emit("buscarPorTag", tag);
     },
   },
 };
 </script>
+
+<style scoped>
+/* Asegura que el contenido no quede oculto detrás de la navbar */
+body {
+  padding-top: 60px;
+}
+</style>
