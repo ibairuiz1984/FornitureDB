@@ -7,8 +7,12 @@
         <div class="header-text">
           <h1 class="site-name">Restauración & Conservación</h1>
           <p class="tagline">
-            Nos dedicamos a restaurar y dar nueva vida a muebles y otros elementos de decoración. 
+            Nos dedicamos a restaurar y dar nueva vida a muebles y otros elementos de decoración.
             Fusionamos tradición y modernidad para transformar espacios en lugares únicos y llenos de historia.
+          </p>
+          <p class="tagline">
+            Altzariak eta dekorazioko beste elementu batzuk zaharberritzen eta bizitza berria ematen aritzen gara.
+            Tradizioa eta modernitatea uztartzen ditugu, espazioak leku paregabe eta historiaz beteak bihurtzeko.
           </p>
         </div>
       </div>
@@ -16,7 +20,7 @@
 
     <!-- Listado de muebles -->
     <div class="container mt-4">
-      
+
       <div v-if="mueblesFiltrados.length === 0" class="alert alert-warning text-center">
         No hay muebles disponibles.
       </div>
@@ -24,12 +28,8 @@
         <div v-for="mueble in mueblesFiltrados" :key="mueble.id" class="col-md-4 col-sm-6 mb-4">
           <div class="card h-100 modern-card">
             <!-- Al hacer clic se abre el modal con la imagen completa -->
-            <img
-              :src="mueble.imagenUrl"
-              class="card-img-top"
-              alt="Imagen del mueble"
-              @click="openModal(mueble.imagenUrl)"
-            />
+            <img :src="mueble.imagenUrl" class="card-img-top" alt="Imagen del mueble"
+              @click="openModal(mueble.imagenUrl)" />
             <div class="card-body">
               <h5 class="card-title">{{ mueble.nombre }}</h5>
               <p class="card-text"><strong>Categoría:</strong> {{ mueble.tag }}</p>
@@ -73,34 +73,38 @@ export default {
 <style scoped>
 /* Encabezado introductorio */
 .site-header {
-  background-color: transparent; /* sin fondo gris */
+  background-color: transparent;
+  /* sin fondo gris */
   padding: 1rem 0;
   border-bottom: 1px solid #ddd;
   margin-bottom: 2rem;
 }
+
 .header-container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .header-logo {
   height: 60px;
   margin-right: 1rem;
 }
+
 .header-text {
   max-width: 600px;
   text-align: left;
 }
+
 .site-name {
   margin: 0;
-  font-family: 'Raleway', sans-serif;
   font-size: 1.75rem;
   font-weight: bold;
 }
+
 .tagline {
   margin: 0.5rem 0 0;
-  font-family: 'Lusitana', serif;
   font-size: 1rem;
   color: #555;
   line-height: 1.5;
@@ -118,30 +122,36 @@ body {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .card-img-top:hover {
   transform: scale(1.02);
 }
+
 .modern-card {
   border: none;
   border-radius: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .modern-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
+
 .card-body {
   background: #fff;
   padding: 1.5rem;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
 }
+
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
+
 .card-text {
   font-size: 0.95rem;
   color: #555;
@@ -160,6 +170,7 @@ body {
   justify-content: center;
   z-index: 1000;
 }
+
 .modal-image {
   max-width: 90%;
   max-height: 90%;
@@ -167,3 +178,4 @@ body {
   border-radius: 0.5rem;
 }
 </style>
+
