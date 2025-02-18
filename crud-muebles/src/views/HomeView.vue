@@ -18,18 +18,28 @@
       </div>
     </header>
 
-    <!-- Listado de muebles -->
+    <!-- Filtros de búsqueda y categorías -->
     <div class="container mt-4">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <select v-model="categoriaSeleccionada" class="form-control">
+            <option value="">Todas las categorías</option>
+            <option v-for="categoria in categorias" :key="categoria" :value="categoria">{{ categoria }}</option>
+          </select>
+        </div>
+      </div>
 
+      <!-- Listado de muebles -->
       <div v-if="mueblesFiltrados.length === 0" class="alert alert-warning text-center">
         No hay muebles disponibles.
       </div>
+
       <div class="row">
         <div v-for="mueble in mueblesFiltrados" :key="mueble.id" class="col-md-4 col-sm-6 mb-4">
-          <div class="card h-100 modern-card">
-            <!-- Al hacer clic se abre el modal con la imagen completa -->
-            <img :src="mueble.imagenUrl" class="card-img-top" alt="Imagen del mueble"
-              @click="openModal(mueble.imagenUrl)" />
+          <div class="card h-100 modern-card" :style="getCardStyle(mueble)">
+            <div class="image-container">
+              <img :src="mueble.imagenUrl" class="card-img-top" alt="Imagen del mueble" @click="openModal(mueble)" />
+            </div>
             <div class="card-body">
               <h5 class="card-title">{{ mueble.nombre }}</h5>
               <p class="card-text"><strong>Categoría:</strong> {{ mueble.tag }}</p>
@@ -41,141 +51,215 @@
     </div>
 
     <!-- Modal para imagen ampliada -->
-    <div v-if="enlargedImage" class="modal-overlay" @click="closeModal">
-      <img :src="enlargedImage" class="modal-image" @click.stop />
+    <div v-if="selectedMueble" class="modal-overlay" @click="closeModal">
+      <div class="modal-content">
+        <img :src="selectedMueble.imagenUrl" class="modal-image" @click.stop />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, inject } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { db } from "@/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default {
   name: "MueblesList",
   setup() {
-    // Inyecta la propiedad reactiva 'mueblesFiltrados' desde el componente padre
-    const mueblesFiltrados = inject("mueblesFiltrados");
-    const enlargedImage = ref(null);
+    const muebles = ref([]);
+    const selectedMueble = ref(null);
+    const busqueda = ref("");
+    const categoriaSeleccionada = ref("");
+    const categorias = ref([]);
 
-    const openModal = (url) => {
-      enlargedImage.value = url;
+    const colores = ["#C70039", "#5dade2", "#FFC300", "#2ecc71"]; //Rojo, Azul, Amarillo, verde 
+    const cargarMuebles = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "muebles"));
+        muebles.value = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          color: colores[Math.floor(Math.random() * colores.length)],
+        }));
+        categorias.value = [...new Set(muebles.value.map((mueble) => mueble.tag))];
+      } catch (error) {
+        console.error("Error al obtener los muebles: ", error);
+      }
+    };
+
+    onMounted(cargarMuebles);
+
+    const mueblesFiltrados = computed(() => {
+      return muebles.value.filter((mueble) => {
+        const matchesSearch =
+          mueble.nombre.toLowerCase().includes(busqueda.value.toLowerCase()) ||
+          mueble.descripcion.toLowerCase().includes(busqueda.value.toLowerCase());
+
+        return categoriaSeleccionada.value === "" ? matchesSearch : matchesSearch && mueble.tag === categoriaSeleccionada.value;
+      });
+    });
+
+    const openModal = (mueble) => {
+      selectedMueble.value = mueble;
     };
 
     const closeModal = () => {
-      enlargedImage.value = null;
+      selectedMueble.value = null;
     };
 
-    return { mueblesFiltrados, enlargedImage, openModal, closeModal };
+    const getCardStyle = (mueble) => {
+      return {
+        backgroundColor: mueble.color,
+        color: mueble.color === "#FFC300" ? "#000" : "#FFF", // Texto oscuro si el fondo es amarillo
+      };
+    };
+
+    return {
+      mueblesFiltrados,
+      selectedMueble,
+      openModal,
+      closeModal,
+      busqueda,
+      categoriaSeleccionada,
+      categorias,
+      getCardStyle,
+    };
   },
 };
 </script>
 
 <style scoped>
-/* Encabezado introductorio */
+/* Estilo del header */
 .site-header {
-  background-color: transparent;
-  /* sin fondo gris */
-  padding: 1rem 0;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 2rem;
+  width: 100%;
+  background: #FFC300;
+  padding: 3rem 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .header-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
+  width: 90%;
+  max-width: 1200px;
 }
 
 .header-logo {
-  height: 60px;
-  margin-right: 1rem;
+  height: 80px;
+  margin-right: 20px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
 }
 
 .header-text {
-  max-width: 600px;
-  text-align: left;
+  flex: 1;
+  color: black;
 }
 
 .site-name {
-  margin: 0;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
 .tagline {
-  margin: 0.5rem 0 0;
   font-size: 1rem;
-  color: #555;
-  line-height: 1.5;
+  margin-top: 10px;
 }
 
-/* Ajustar el padding del body para que no quede oculto por el header */
-body {
-  padding-top: 120px;
+/* Estilo de la tarjeta */
+.modern-card {
+  position: relative;
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Tarjeta de muebles */
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.image-container::before {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  clip-path: polygon(0% 100%, 50% 70%, 100% 100%);
+  background: inherit;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
 .card-img-top {
-  max-height: 200px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   cursor: pointer;
   transition: transform 0.2s ease;
+  /* Corte poligonal en la parte inferior de la imagen */
+  clip-path: polygon(0% 0%, 900% 0%, 100% 75%, 40% 100%, 0% 50%);
 }
 
 .card-img-top:hover {
   transform: scale(1.02);
 }
 
-.modern-card {
-  border: none;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modern-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-body {
-  background: #fff;
-  padding: 1.5rem;
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-.card-text {
-  font-size: 0.95rem;
-  color: #555;
-}
-
-/* Modal overlay para imagen ampliada */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
+  cursor: pointer;
+}
+
+.modal-content {
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  text-align: center;
 }
 
 .modal-image {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 10px;
   object-fit: contain;
-  border-radius: 0.5rem;
+  cursor: auto;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    /* Cambiar a columna en pantallas pequeñas */
+    text-align: center;
+  }
+
+  .header-logo {
+    margin: 20px 0 0 0;
+    /* Agregar margen arriba */
+  }
 }
 </style>
-

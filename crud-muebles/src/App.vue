@@ -11,7 +11,7 @@
 import { ref, computed, onMounted, provide } from "vue";
 import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import NavBar from "./components/NavBar.vue";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
   name: "App",
