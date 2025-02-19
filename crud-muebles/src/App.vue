@@ -57,3 +57,8 @@ export default {
   },
 };
 </script>
+<style>
+:root {
+    font-family: 'Poppins', sans-serif;
+}
+</style>
