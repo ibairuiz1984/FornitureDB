@@ -3,16 +3,23 @@
     <!-- Encabezado introductorio -->
     <header class="site-header">
       <div class="header-container">
-        <img :src="require('@/assets/img/logo.png')" alt="Logo" class="header-logo" />
+        <img
+          :src="require('@/assets/img/logo.png')"
+          alt="Logo"
+          class="header-logo"
+        />
         <div class="header-text">
           <h1 class="site-name">Restauración & Conservación</h1>
           <p class="tagline">
-            Nos dedicamos a restaurar y dar nueva vida a muebles y otros elementos de decoración.
-            Fusionamos tradición y modernidad para transformar espacios en lugares únicos y llenos de historia.
+            Nos dedicamos a restaurar y dar nueva vida a muebles y otros
+            elementos de decoración. Fusionamos tradición y modernidad para
+            transformar espacios en lugares únicos y llenos de historia.
           </p>
           <p class="tagline">
-            Altzariak eta dekorazioko beste elementu batzuk zaharberritzen eta bizitza berria ematen aritzen gara.
-            Tradizioa eta modernitatea uztartzen ditugu, espazioak leku paregabe eta historiaz beteak bihurtzeko.
+            Altzariak eta dekorazioko beste elementu batzuk zaharberritzen eta
+            bizitza berria ematen aritzen gara. Tradizioa eta modernitatea
+            uztartzen ditugu, espazioak leku paregabe eta historiaz beteak
+            bihurtzeko.
           </p>
         </div>
       </div>
@@ -24,25 +31,45 @@
         <div class="col-md-6">
           <select v-model="categoriaSeleccionada" class="form-control">
             <option value="">Todas las categorías</option>
-            <option v-for="categoria in categorias" :key="categoria" :value="categoria">{{ categoria }}</option>
+            <option
+              v-for="categoria in categorias"
+              :key="categoria"
+              :value="categoria"
+            >
+              {{ categoria }}
+            </option>
           </select>
         </div>
       </div>
 
       <!-- Listado de muebles -->
-      <div v-if="mueblesFiltrados.length === 0" class="alert alert-warning text-center">
+      <div
+        v-if="mueblesFiltrados.length === 0"
+        class="alert alert-warning text-center"
+      >
         No hay muebles disponibles.
       </div>
 
       <div class="row">
-        <div v-for="mueble in mueblesFiltrados" :key="mueble.id" class="col-md-4 col-sm-6 mb-4">
+        <div
+          v-for="mueble in mueblesFiltrados"
+          :key="mueble.id"
+          class="col-md-4 col-sm-6 mb-4"
+        >
           <div class="card h-100 modern-card" :style="getCardStyle(mueble)">
             <div class="image-container">
-              <img :src="mueble.imagenUrl" class="card-img-top" alt="Imagen del mueble" @click="openModal(mueble)" />
+              <img
+                :src="mueble.imagenUrl"
+                class="card-img-top"
+                alt="Imagen del mueble"
+                @click="openModal(mueble)"
+              />
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ mueble.nombre }}</h5>
-              <p class="card-text"><strong>Categoría:</strong> {{ mueble.tag }}</p>
+              <p class="card-text">
+                <strong>Categoría:</strong> {{ mueble.tag }}
+              </p>
               <p class="card-text">{{ mueble.descripcion }}</p>
             </div>
           </div>
@@ -73,7 +100,7 @@ export default {
     const categoriaSeleccionada = ref("");
     const categorias = ref([]);
 
-    const colores = ["#C70039", "#5dade2", "#FFC300", "#2ecc71"]; //Rojo, Azul, Amarillo, verde 
+    const colores = ["#df0411", " #5dade2", "#ffe101", "#2ecc71"]; //Rojo, Azul, Amarillo, verde
     const cargarMuebles = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "muebles"));
@@ -82,7 +109,9 @@ export default {
           ...doc.data(),
           color: colores[Math.floor(Math.random() * colores.length)],
         }));
-        categorias.value = [...new Set(muebles.value.map((mueble) => mueble.tag))];
+        categorias.value = [
+          ...new Set(muebles.value.map((mueble) => mueble.tag)),
+        ];
       } catch (error) {
         console.error("Error al obtener los muebles: ", error);
       }
@@ -94,9 +123,13 @@ export default {
       return muebles.value.filter((mueble) => {
         const matchesSearch =
           mueble.nombre.toLowerCase().includes(busqueda.value.toLowerCase()) ||
-          mueble.descripcion.toLowerCase().includes(busqueda.value.toLowerCase());
+          mueble.descripcion
+            .toLowerCase()
+            .includes(busqueda.value.toLowerCase());
 
-        return categoriaSeleccionada.value === "" ? matchesSearch : matchesSearch && mueble.tag === categoriaSeleccionada.value;
+        return categoriaSeleccionada.value === ""
+          ? matchesSearch
+          : matchesSearch && mueble.tag === categoriaSeleccionada.value;
       });
     });
 
@@ -111,7 +144,7 @@ export default {
     const getCardStyle = (mueble) => {
       return {
         backgroundColor: mueble.color,
-        color: mueble.color === "#FFC300" ? "#000" : "#FFF", // Texto oscuro si el fondo es amarillo
+        color: mueble.color === "#ffe101" ? "#000" : "#FFF", // Texto oscuro si el fondo es amarillo
       };
     };
 
@@ -133,7 +166,7 @@ export default {
 /* Estilo del header */
 .site-header {
   width: 100%;
-  background: #FFC300;
+  background: #ffe101;
   padding: 3rem 0;
 
   display: flex;

@@ -120,7 +120,7 @@ export default {
 .circle {
   width: 150px;
   height: 150px;
-  background-color: #C70039;
+  background-color: #df0411;
   border-radius: 50%;
   top: 10%;
   left: 5%;
@@ -142,7 +142,7 @@ export default {
   height: 0;
   border-left: 90px solid transparent;
   border-right: 90px solid transparent;
-  border-bottom: 150px solid #FFC300;
+  border-bottom: 150px solid #ffe101;
   top: 20%;
   right: 10%;
 }
