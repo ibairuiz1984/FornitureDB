@@ -112,7 +112,7 @@ export default {
 
 /* Formas de fondo */
 .polygon {
-  position: absolute;
+  position: fixed;
   width: 200px;
   height: 200px;
   opacity: 0.6;
