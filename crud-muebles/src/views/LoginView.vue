@@ -58,93 +58,83 @@ export default {
 <style scoped>
 /* Fondo general */
 .background {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    background-color: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Estilos del formulario */
+/* Formulario */
 .container {
-    position: relative;
-    max-width: 600px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+  position: relative;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 10; /* Asegura que el formulario esté encima */
 }
 
-/* Estilos de formas poligonales */
+/* Formas de fondo */
 .polygon {
-    position: absolute;
-    opacity: 0.8;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: morph 6s infinite alternate ease-in-out;
 }
 
-/* Círculo grande */
+/* Colores y posiciones de las figuras */
 .circle {
-    width: 150px;
-    height: 150px;
-    background-color:#df0411;
-    border-radius: 50%;
-    top: 10%;
-    left: 5%;
+  top: 10%;
+  left: 15%;
+  background-color: #df0411;
+  animation-duration: 7s;
+  animation-delay: 0s;
 }
 
-/* Círculo pequeño */
-.small-circle {
-    width: 80px;
-    height: 80px;
-    background-color: #5dade2;
-    border-radius: 50%;
-    top: 60%;
-    right: 15%;
-}
-
-/* Triángulo */
-.triangle {
-    width: 0;
-    height: 0;
-    border-left: 90px solid transparent;
-    border-right: 90px solid transparent;
-    border-bottom: 150px solid #ffe101;
-    top: 20%;
-    right: 10%;
-}
-
-/* Triángulo grande */
-.big-triangle {
-    width: 0;
-    height: 0;
-    border-left: 120px solid transparent;
-    border-right: 120px solid transparent;
-    border-bottom: 180px solid #5dade2;
-    bottom: 10%;
-    left: 20%;
-}
-
-/* Cuadrado */
 .square {
-    width: 110px;
-    height: 110px;
-    background-color: #2ecc71;
-    position: absolute;
-    bottom: 30%;
-    left: 35%;
+  bottom: 20%;
+  right: 10%;
+  background-color: #5dade2;
+  animation-duration: 6s;
+  animation-delay: 1s;
 }
 
-/* Rombo */
 .rhombus {
-    width: 90px;
-    height: 90px;
-    background-color: #df0411;
-    position: absolute;
-    bottom: 10%;
-    right: 10%;
-    transform: rotate(45deg);
+  top: 50%;
+  left: 10%;
+  background-color: #ffe101;
+  animation-duration: 5s;
+  animation-delay: 2s;
+}
+
+.big-triangle {
+  bottom: 70%;
+  left: 65%;
+  background-color: #2ecc71;
+  animation-duration: 8s;
+  animation-delay: 3s;
+}
+
+/* Animación de transformación */
+@keyframes morph {
+  0% {
+    border-radius: 0%;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    border-radius: 50%;
+    transform: rotate(90deg) scale(1.2);
+  }
+  100% {
+    border-radius: 0%;
+    transform: rotate(0deg) scale(1);
+  }
 }
 </style>
